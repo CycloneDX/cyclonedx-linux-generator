@@ -1,0 +1,25 @@
+Package: zip
+Version: 3.0-11build1
+Priority: optional
+Section: utils
+Origin: Ubuntu
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Original-Maintainer: Santiago Vila <sanvila@debian.org>
+Bugs: https://bugs.launchpad.net/ubuntu/+filebug
+Installed-Size: 638 kB
+Depends: libbz2-1.0, libc6 (>= 2.14)
+Recommends: unzip
+Homepage: http://www.info-zip.org/Zip.html
+Task: ubuntu-desktop, kubuntu-desktop, xubuntu-core, xubuntu-desktop, lubuntu-desktop-share, lubuntu-gtk-desktop, lubuntu-desktop, lubuntu-qt-desktop, ubuntustudio-desktop-core, ubuntustudio-desktop, ubuntukylin-desktop, ubuntu-mate-core, ubuntu-mate-desktop, ubuntu-budgie-desktop
+Supported: 5y
+Download-Size: 167 kB
+APT-Manual-Installed: no
+APT-Sources: http://us.archive.ubuntu.com/ubuntu bionic/main amd64 Packages
+Description: Archiver for .zip files
+ This is InfoZIP's zip program. It produces files that are fully
+ compatible with the popular PKZIP program; however, the command line
+ options are not identical. In other words, the end result is the same,
+ but the methods differ. :-)
+ .
+ This version supports encryption.
+

@@ -1,0 +1,23 @@
+Loaded plugins: amazon-id
+Repo rhui-client-config-server-7 forced skip_if_unavailable=True due to: /etc/pki/rhui/cdn.redhat.com-chain.crt
+Repo rhui-client-config-server-7 forced skip_if_unavailable=True due to: /etc/pki/rhui/product/rhui-client-config-server-7.crt
+Repo rhui-client-config-server-7 forced skip_if_unavailable=True due to: /etc/pki/rhui/rhui-client-config-server-7.key
+Repo rhel-7-server-rhui-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/cdn.redhat.com-chain.crt
+Repo rhel-7-server-rhui-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/product/content-rhel7.crt
+Repo rhel-7-server-rhui-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/content-rhel7.key
+Repo rhel-7-server-rhui-extras-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/cdn.redhat.com-chain.crt
+Repo rhel-7-server-rhui-extras-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/product/content-rhel7.crt
+Repo rhel-7-server-rhui-extras-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/content-rhel7.key
+Repo rhel-7-server-rhui-optional-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/cdn.redhat.com-chain.crt
+Repo rhel-7-server-rhui-optional-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/product/content-rhel7.crt
+Repo rhel-7-server-rhui-optional-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/content-rhel7.key
+Repo rhel-7-server-rhui-rh-common-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/cdn.redhat.com-chain.crt
+Repo rhel-7-server-rhui-rh-common-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/product/content-rhel7.crt
+Repo rhel-7-server-rhui-rh-common-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/content-rhel7.key
+Repo rhel-7-server-rhui-supplementary-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/cdn.redhat.com-chain.crt
+Repo rhel-7-server-rhui-supplementary-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/product/content-rhel7.crt
+Repo rhel-7-server-rhui-supplementary-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/content-rhel7.key
+Repo rhel-server-rhui-rhscl-7-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/cdn.redhat.com-chain.crt
+Repo rhel-server-rhui-rhscl-7-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/product/content-rhel7.crt
+Repo rhel-server-rhui-rhscl-7-rpms forced skip_if_unavailable=True due to: /etc/pki/rhui/content-rhel7.key
+https://rhui3.us-west-2.aws.ce.redhat.com/pulp/repos/content/dist/rhel/rhui/server/7/7Server/x86_64/os/Packages/z/zip-3.0-11.el7.x86_64.rpm
