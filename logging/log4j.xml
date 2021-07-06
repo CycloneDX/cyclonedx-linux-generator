@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+<appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<param name="threshold" value="all"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="SBomGeneratorAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="append" value="true" />
+		<param name="maxFileSize" value="100MB" />
+		<param name="maxBackupIndex" value="10" />
+		<param name="file" value="./logs/unixSbomGenerator.log" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="SpringAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="append" value="true" />
+		<param name="maxFileSize" value="10MB" />
+		<param name="maxBackupIndex" value="2" />
+		<param name="file" value="./logs/spring.log" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="CycloneDxAppender" class="org.apache.log4j.RollingFileAppender">
+		<param name="append" value="true" />
+		<param name="maxFileSize" value="10MB" />
+		<param name="maxBackupIndex" value="2" />
+		<param name="file" value="./logs/cyclonedx.log" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+		</layout>
+	</appender>
+
+	<logger name="org.cyclonedx">
+		<level value="debug"/>
+		<appender-ref ref="CycloneDxAppender"/>
+	</logger>
+
+	<logger name="com.lmco.efoss.unix.sbom">
+		<level value="debug"/>
+		<appender-ref ref="SBomGeneratorAppender"/>
+	</logger>
+
+	<!-- Logger for Spring classes -->
+	<logger name="org.springframework">
+		<level value="error"/>
+		<appender-ref ref="SpringAppender"/>
+	</logger>
+
+	<root>
+		<priority value ="all" />
+		<appender-ref ref="console"/>
+	</root>
+	
+</log4j:configuration>

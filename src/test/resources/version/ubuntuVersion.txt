@@ -1,0 +1,10 @@
+curl:
+  Installed: 7.58.0-2ubuntu3.10
+  Candidate: 7.58.0-2ubuntu3.10
+  Version table:
+ *** 7.58.0-2ubuntu3.10 500
+        500 http://us.archive.ubuntu.com/ubuntu bionic-updates/main amd64 Packages
+        500 http://security.ubuntu.com/ubuntu bionic-security/main amd64 Packages
+        100 /var/lib/dpkg/status
+     7.58.0-2ubuntu3 500
+        500 http://us.archive.ubuntu.com/ubuntu bionic/main amd64 Packages
