@@ -1,0 +1,11 @@
+Name : zip
+Arch : x86_64
+Version : 3.0
+Release : 11.el7
+Size : 796 k
+Repo : installed
+From repo : rhel-7-server-rhui-rpms
+Summary : A file compression and packaging utility compatible with PKZIP
+URL : http://www.info-zip.org/Zip.html
+License : BSD
+Description : The zip program is a compression and file packaging utility.  Zip is analogous to a combination of the UNIX tar and compress commands and is compatible with PKZIP (a compression and file packaging utility for MS-DOS systems). Install the zip package if you need to compress files using the zip program.
