@@ -43,7 +43,7 @@
 		<appender-ref ref="CycloneDxAppender"/>
 	</logger>
 
-	<logger name="com.lmco.efoss.unix.sbom">
+	<logger name="org.cyclonedx.contrib.com.lmco.efoss.unix.sbom">
 		<level value="debug"/>
 		<appender-ref ref="SBomGeneratorAppender"/>
 	</logger>
