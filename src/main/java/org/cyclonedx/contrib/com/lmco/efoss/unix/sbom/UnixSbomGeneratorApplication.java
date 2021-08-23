@@ -11,6 +11,7 @@ package org.cyclonedx.contrib.com.lmco.efoss.unix.sbom;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -46,8 +47,11 @@ public class UnixSbomGeneratorApplication
 		try
 		{
 			logger.debug("Starting Unix SBOM Generator.");
-			
-			softwareProcessed = SBomGenerator.generateSBom();
+			if (!SystemUtils.IS_OS_LINUX || !SystemUtils.IS_OS_UNIX) {
+				logger.info("Unable to execute. Target system is not supported.");
+				System.exit(1);
+			}
+ 			softwareProcessed = SBomGenerator.generateSBom();
 			SpringApplication.run(UnixSbomGeneratorApplication.class, args);
 		}
 		catch (SBomException sbe)
