@@ -42,12 +42,11 @@ You can also use the provided "start.sh" script as a pass through to the jar.  I
 ### Help Output shows options for running the SBomCombiner application.
 <pre>
 usage: help
-    -g, --group <arg>      (Optional) Group value to assign to top level component.
-    -h, --help             will print out the command line options.
-    -i, --image <arg>      (Optional) Docker Image file to use as top level component.
-    -n, --name <arg>       (Optional) Name value to assign to top level component.
-    -nc, --no-components   (Optional) Will only campture master component.  Will not
-                       include any components in the list of Components.
+    -g, --group <arg>       (Optional) Group value to assign to top level component.
+    -h, --help              will print out the command line options.
+    -i, --image <arg>       (Optional) Docker Image file to use as top level component.
+    -n, --name <arg>        (Optional) Name value to assign to top level component.
+    -nc, --no-components    (Optional) Will only campture master component.  Will not include any components in the list of Components.
      -v, --version <arg>    (Optional) Version value to assign to top level component.
 </pre>
 
