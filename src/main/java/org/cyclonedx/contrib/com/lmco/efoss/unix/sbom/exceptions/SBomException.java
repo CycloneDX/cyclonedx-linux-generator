@@ -15,7 +15,7 @@ package org.cyclonedx.contrib.com.lmco.efoss.unix.sbom.exceptions;
  * @author wrgoff
  * @since 22 April 2020
  */
-public class SBomException extends Exception
+public class SBomException extends RuntimeException
 {
 	private static final long serialVersionUID = 8505738900643528230L;
 	
