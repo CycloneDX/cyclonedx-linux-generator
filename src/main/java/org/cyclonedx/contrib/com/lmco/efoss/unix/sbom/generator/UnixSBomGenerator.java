@@ -151,7 +151,6 @@ public class UnixSBomGenerator
 	 * @throws SBomException if we can NOT read from the reader passed in.
 	 */
 	public Map<String, String> generateAlpineDetailMap(BufferedReader reader)
-			throws SBomException
 	{
 		Map<String, String> detailMap = new HashMap<>();
 		
@@ -199,7 +198,7 @@ public class UnixSBomGenerator
 	 * @throws SBomException if we can NOT read from the reader passed in.
 	 */
 	public Map<String, String> generateDetailMap(BufferedReader reader,
-			AVAILABLE_LINUX_FLAVORS linuxFlavor) throws SBomException
+			AVAILABLE_LINUX_FLAVORS linuxFlavor)
 	{
 		Map<String, String> detailMap = new HashMap<>();
 		
@@ -275,7 +274,7 @@ public class UnixSBomGenerator
 	 *                       installed on the server.
 	 */
 	protected List<String> generateListOfSoftware(String cmd, char separator,
-			String preProcessingString) throws SBomException
+			String preProcessingString)
 	{
 		List<String> softwareList = new ArrayList<>();
 		
@@ -307,7 +306,6 @@ public class UnixSBomGenerator
 	 * @throws SBomException if we can NOT read from the reader passed in.
 	 */
 	public Map<String, String> generateRedHatDetailMap(BufferedReader reader)
-			throws SBomException
 	{
 		return (generateDetailMap(reader, AVAILABLE_LINUX_FLAVORS.REDHAT));
 	}
@@ -320,7 +318,6 @@ public class UnixSBomGenerator
 	 * @throws SBomException if we can NOT read from the reader passed in.
 	 */
 	public Map<String, String> generateUbuntuDetailMap(BufferedReader reader)
-			throws SBomException
 	{
 		return (generateDetailMap(reader, AVAILABLE_LINUX_FLAVORS.UBUNTU));
 	}
@@ -375,7 +372,7 @@ public class UnixSBomGenerator
 	 * @throws SBomException in the event we can NOT produce the detail map of the software.
 	 */
 	public Map<String, String> processDetailMapCommand(Process process,
-			AVAILABLE_LINUX_FLAVORS linuxFlavor) throws SBomException
+			AVAILABLE_LINUX_FLAVORS linuxFlavor)
 	{
 		Map<String, String> detailMap = new HashMap<>();
 
@@ -422,7 +419,7 @@ public class UnixSBomGenerator
 	 * @throws SBomException if we are unable to get the list of software.
 	 */
 	public List<String> processListCmdOutput(BufferedReader reader, char separator,
-			String preProcessingString) throws SBomException
+			String preProcessingString)
 	{
 		List<String> softwareList = new ArrayList<>();
 		
@@ -483,7 +480,7 @@ public class UnixSBomGenerator
 	 * @throws SBomException in the event we are unable to process the output of the Unix command.
 	 */
 	public List<String> processListOfSoftware(Process process, String cmd, char separator,
-			String preProcessingString) throws SBomException
+			String preProcessingString)
 	{
 		List<String> softwareList = new ArrayList<>();
 		
@@ -526,7 +523,7 @@ public class UnixSBomGenerator
 	 * @throws SBomException in the event we can NOT produce the detail map of the software.
 	 */
 	protected Map<String, String> produceDetailMap(String cmd,
-			AVAILABLE_LINUX_FLAVORS linuxFlavor) throws SBomException
+			AVAILABLE_LINUX_FLAVORS linuxFlavor)
 	{
 		Map<String, String> detailMap = new HashMap<>();
 		

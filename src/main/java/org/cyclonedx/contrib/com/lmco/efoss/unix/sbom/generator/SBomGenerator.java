@@ -113,7 +113,6 @@ public class SBomGenerator
 	 * @throws SBomException if we are unable to produce the file.
 	 */
 	public static void createBomFile(Bom bom, SBomCommons.AVAILABLE_FORMATS format)
-			throws SBomException
 	{
 		File file = new File("output/bom." + format.toString().toLowerCase());
 		try (FileWriter writer = new FileWriter(file))
@@ -193,7 +192,7 @@ public class SBomGenerator
 	 * @param bom Bill of Materials to create the files form.
 	 * @throws SBomException in the event we can NOT create either the XML of JSon files.
 	 */
-	public static void generateBoms(Bom bom) throws SBomException
+	public static void generateBoms(Bom bom)
 	{
 		try
 		{	
@@ -221,7 +220,7 @@ public class SBomGenerator
 	 * @return int the number of programs found within the operating system.
 	 * @throws SBomException if we are unable to build the SBOM.
 	 */
-	public static int generateSBom(CommandLine cli) throws SBomException
+	public static int generateSBom(CommandLine cli)
 	{		
 		OperatingSystemUtils osUtils = new OperatingSystemUtils();
 		String vendor = osUtils.getOsVendor();

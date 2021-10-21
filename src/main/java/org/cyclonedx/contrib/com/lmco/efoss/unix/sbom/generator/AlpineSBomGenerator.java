@@ -46,7 +46,7 @@ public class AlpineSBomGenerator extends UnixSBomGenerator
 	 * @return Bom The Software Bill Of Materials for this RedHat Linux Operating System.
 	 * @throws SBomException if we are unable to build the SBOM.
 	 */
-	public Bom generateSBom() throws SBomException
+	public Bom generateSBom()
 	{
 		List<String> softwareList = generateListOfSoftware(SOFTWARE_LIST_CMD, '\n',
 				null);
@@ -78,7 +78,7 @@ public class AlpineSBomGenerator extends UnixSBomGenerator
 	 * @return String the version of the software.
 	 * @throws SBomException if we are unable to run the command to get the version.
 	 */
-	public String getVersion(String software) throws SBomException
+	public String getVersion(String software)
 	{
 		String version = null;
 		
@@ -108,7 +108,6 @@ public class AlpineSBomGenerator extends UnixSBomGenerator
 	 * @throws SBomException if we are unable to read the version from the reader.
 	 */
 	public String parseVersion(BufferedReader reader)
-			throws SBomException
 	{
 		String version = null;
 		
@@ -154,7 +153,7 @@ public class AlpineSBomGenerator extends UnixSBomGenerator
 	 * @throws SBomException in the event we are unable to complete the processing of the unix
 	 *                       command.
 	 */
-	public String parseVersion(Process process, String cmd) throws SBomException
+	public String parseVersion(Process process, String cmd)
 	{
 		String version = null;
 		
@@ -194,7 +193,7 @@ public class AlpineSBomGenerator extends UnixSBomGenerator
 	 * @return Map containing the key value pairs about the software.
 	 * @throws SBomException in the event we can NOT produce the detail map of the software.
 	 */
-	private Map<String, String> produceDetailMap(String software) throws SBomException
+	private Map<String, String> produceDetailMap(String software)
 	{
 		String cmd = SOFTWARE_DETAIL_CMD + software;
 		
