@@ -40,7 +40,7 @@ public class OperatingSystemUtils
 	 * 
 	 * @throws SBomException in the event we are unable to read the file.
 	 */
-	public OperatingSystemUtils() throws SBomException
+	public OperatingSystemUtils()
 	{
 		osMap = getOs();
 	}
@@ -120,7 +120,7 @@ public class OperatingSystemUtils
 	 * @return Map containing the information from the os-release file.
 	 * @throws SBomException in the event we are unable to read the file.
 	 */
-	public Map<String, String> getOs() throws SBomException
+	public Map<String, String> getOs()
 	{
 		Map<String, String> detailMap = new HashMap<>();
 		

@@ -54,7 +54,7 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 	 * @return Bom The Software Bill Of Materials for this RedHat Linux Operating System.
 	 * @throws SBomException if we are unable to build the SBOM.
 	 */
-	public Bom generateSBom() throws SBomException
+	public Bom generateSBom()
 	{
 		List<String> softwareList = generateListOfSoftware(SOFTWARE_LIST_CMD, ' ',
 				"Installed Packages");
@@ -127,7 +127,7 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 	 * @return String the URL that will be used to download this software product.
 	 * @throws SBomException in the event we are unable to get the PURL from the server.
 	 */
-	public String getPurl(String software) throws SBomException
+	public String getPurl(String software)
 	{
 		String purl = null;
 		
@@ -161,7 +161,7 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 	 * @return String the PURL if available.
 	 * @throws SBomException if we are unable to process the output of the YUM command.
 	 */
-	public String parsePurl(Process process, String software) throws SBomException
+	public String parsePurl(Process process, String software)
 	{
 		String purl = null;
 		
@@ -203,7 +203,7 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 	 * @return String the PURL or download URL that can be used to download the software package.
 	 * @throws SBomException in the event we are unable to parse the command's output.
 	 */
-	public String parsePurlCmdOutput(BufferedReader reader) throws SBomException
+	public String parsePurlCmdOutput(BufferedReader reader)
 	{
 		String purl = null;
 		try
@@ -279,7 +279,7 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 	 * @return Map containing the key value pairs about the software.
 	 * @throws SBomException in the event we can NOT produce the detail map of the software.
 	 */
-	private Map<String, String> produceDetailMap(String software) throws SBomException
+	private Map<String, String> produceDetailMap(String software)
 	{
 		String cmd = SOFTWARE_DETAIL_CMD + " " + software;
 		

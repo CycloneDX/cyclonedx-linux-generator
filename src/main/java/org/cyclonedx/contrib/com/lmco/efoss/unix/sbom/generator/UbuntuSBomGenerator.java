@@ -47,7 +47,7 @@ public class UbuntuSBomGenerator extends UnixSBomGenerator
 	 * @return Bom The Software Bill Of Materials for this Ubuntu Linux Operating System.
 	 * @throws SBomException if we are unable to build the SBOM.
 	 */
-	public Bom generateSBom() throws SBomException
+	public Bom generateSBom()
 	{
 		List<String> softwareList = generateListOfSoftware(SOFTWARE_LIST_CMD, '/',
 				"");
@@ -86,7 +86,7 @@ public class UbuntuSBomGenerator extends UnixSBomGenerator
 	 * @return String value of the version of the software that is currently installed.
 	 * @throws SBomException in the event we can NOT get the version.
 	 */
-	public String getInstalledVersion(String software) throws SBomException
+	public String getInstalledVersion(String software)
 	{
 		String version = "";
 		
@@ -125,7 +125,7 @@ public class UbuntuSBomGenerator extends UnixSBomGenerator
 	 * @return String the version pulled from the reader.
 	 * @throws SBomException in the event we are unable to read from the Unix Command.
 	 */
-	public String parseVersion(BufferedReader reader) throws SBomException
+	public String parseVersion(BufferedReader reader)
 	{
 		String version = null;
 		
@@ -188,7 +188,7 @@ public class UbuntuSBomGenerator extends UnixSBomGenerator
 	 * @return Map containing the key value pairs about the software.
 	 * @throws SBomException in the event we can NOT produce the detail map of the software.
 	 */
-	private Map<String, String> produceDetailMap(String software) throws SBomException
+	private Map<String, String> produceDetailMap(String software)
 	{
 		String cmd = SOFTWARE_DETAIL_CMD + " " + software + "=" + getInstalledVersion(software);
 		
@@ -202,7 +202,7 @@ public class UbuntuSBomGenerator extends UnixSBomGenerator
 	 * @return String the version.
 	 * @throws SBomException in the event we are unable to process the command.
 	 */
-	public String readVersion(Process process) throws SBomException
+	public String readVersion(Process process)
 	{
 		String version = null;
 		try (BufferedReader reader = new BufferedReader(
