@@ -16,9 +16,10 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.cyclonedx.contrib.com.lmco.efoss.sbom.commons.utils.StringUtils;
+import org.cyclonedx.contrib.com.lmco.efoss.unix.sbom.exceptions.SBomException;
 
 import com.google.common.base.CharMatcher;
-import org.cyclonedx.contrib.com.lmco.efoss.unix.sbom.exceptions.SBomException;
 
 /**
  * (U) This class is used to determine the operating system.
@@ -32,29 +33,41 @@ public class OperatingSystemUtils
 	
 	private static final String OS_RELEASE_FILE = "/etc/os-release";
 	
+	private Map<String, String> osMap = null;
+
 	/**
-	 * (U) Constructor
+	 * (U) Base Constructor.
+	 * 
+	 * @throws SBomException in the event we are unable to read the file.
 	 */
-	private OperatingSystemUtils()
-	{}
+	public OperatingSystemUtils() throws SBomException
+	{
+		osMap = getOs();
+	}
+
+	/**
+	 * (U) Constructor.
+	 * 
+	 * @param fileContents String value for the contents of the "/etc/os-release"
+	 *                     file.
+	 */
+	public OperatingSystemUtils(String fileContents)
+	{
+		osMap = readOs(fileContents);
+	}
 	
 	/**
 	 * (U) This method is used to get the operating System.
 	 * 
 	 * @return String the operating system.
 	 */
-	public static String getOsVendor() // throws SBomException
+	public String getOsVendor()
 	{
-		String osVendor = null;
-		try
-		{
-			Map<String, String> os = getOs();
-			
-			osVendor = os.get("NAME");
-			
+		String osVendor = osMap.get("NAME");
+
+		if (StringUtils.isValid(osVendor))
 			osVendor = CharMatcher.is('\"').trimFrom(osVendor);
-		}
-		catch (SBomException sbomE)
+		else
 		{
 			logger.warn("Unable to determine OS.  Assuming a flavor of Redhat.!");
 			osVendor = "REDHAT";
@@ -63,12 +76,51 @@ public class OperatingSystemUtils
 	}
 	
 	/**
-	 * (U) This method is used to get the operating system. From the /etc/os-release file.
+	 * (U) This method is used to get the operating System Name.
+	 * 
+	 * @return String the operating system name.
+	 */
+	public String getOsName()
+	{
+		String osName = null;
+
+		if (osMap.containsKey("ID"))
+			osName = osMap.get("ID");
+		else
+			osName = osMap.get("NAME");
+
+		osName = osName.replace('"', ' ').trim();
+
+		return osName;
+	}
+
+	/**
+	 * (U) This method is used to get the operating System Version.
+	 * 
+	 * @return String the operating system version.
+	 */
+	public String getOsVersion()
+	{
+		String version = null;
+
+		if (osMap.containsKey("VERSION_ID"))
+			version = osMap.get("VERSION_ID");
+		else
+			version = osMap.get("VERSION");
+
+		version = version.replace('"', ' ').trim();
+
+		return version;
+	}
+
+	/**
+	 * (U) This method is used to get the operating system. From the /etc/os-release
+	 * file.
 	 * 
 	 * @return Map containing the information from the os-release file.
 	 * @throws SBomException in the event we are unable to read the file.
 	 */
-	public static Map<String, String> getOs() throws SBomException
+	public Map<String, String> getOs() throws SBomException
 	{
 		Map<String, String> detailMap = new HashMap<>();
 		
@@ -94,7 +146,7 @@ public class OperatingSystemUtils
 	 * @param content String value read from the file.
 	 * @return Map containing the information about the Operating system.
 	 */
-	public static Map<String, String> readOs(String content)
+	public Map<String, String> readOs(String content)
 	{
 		Map<String, String> detailMap = new HashMap<>();
 		

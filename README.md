@@ -31,8 +31,24 @@ Note:  For Alpine you must have bash and java installed to run.
 </pre>
 
 ### To Run
-Run Start script provided (start.sh).
+To run as a standalone java application, you can look at the "start.sh" shell script for an example.
+You can also use the provided "start.sh" script as a pass through to the jar.  It assumes all the basic settings.
 
+### Help is available.   
+<pre>
+    ./start.sh -h
+</pre>
+
+### Help Output shows options for running the SBomCombiner application.
+<pre>
+usage: help
+    -g, --group &lt;arg&gt;     (Optional) Group value to assign to top level component.
+    -h, --help            will print out the command line options.
+    -i, --image &lt;arg&gt;     (Optional) Docker Image file to use as top level component.
+    -n, --name &lt;arg&gt;      (Optional) Name value to assign to top level component.
+    -nc, --no-components  (Optional) Will only campture master component.  Will not include any components in the list of Components.
+     -v, --version &lt;arg&gt;  (Optional) Version value to assign to top level component.
+</pre>
 
 ### Logging
 ### Logs
