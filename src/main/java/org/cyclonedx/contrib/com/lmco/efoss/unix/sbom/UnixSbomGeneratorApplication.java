@@ -28,7 +28,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * (U) This Spring Boot application is used to build a Software Build Of Materials (SBOM) for a Unix
- * Virtual Machine (VM), regardless if it is Centos, Redhat, or Ubunto.
+ * Virtual Machine (VM), regardless if it is Centos, Redhat, or Ubuntu.
  *
  * @author wrgoff
  * @since 22 April 2020

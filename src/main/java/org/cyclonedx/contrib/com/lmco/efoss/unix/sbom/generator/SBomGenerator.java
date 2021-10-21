@@ -192,7 +192,7 @@ public class SBomGenerator
 	 * @param bom Bill of Materials to create the files form.
 	 * @throws SBomException in the event we can NOT create either the XML of JSon files.
 	 */
-	public static void geneateBoms(Bom bom)
+	public static void generateBoms(Bom bom)
 	{
 		try
 		{	
@@ -270,8 +270,7 @@ public class SBomGenerator
 			addBomTools(bom);
 			bom.getMetadata().setComponent(master);
 			softwareSize = bom.getComponents().size();
-			geneateBoms(bom);
-
+			generateBoms(bom);
 		}
 		return softwareSize;
 	}
