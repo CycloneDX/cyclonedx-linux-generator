@@ -163,7 +163,7 @@ public class UbuntuSBomGenerator extends UnixSBomGenerator
 	{
 		LicenseChoice licenseChoice = null;
 		
-		String licenseFile = SOFTWARE_LICENSE_DIR + "/" + software + "/copyright";
+		String licenseFile = SOFTWARE_LICENSE_DIR + software + "/copyright";
 		
 		if (logger.isDebugEnabled())
 			logger.debug("Attempting to process license (" + licenseFile + ")");

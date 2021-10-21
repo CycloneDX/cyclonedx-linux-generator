@@ -11,14 +11,20 @@ package org.cyclonedx.contrib.com.lmco.efoss.unix.sbom;
 
 import java.util.Date;
 
-import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.apache.log4j.Logger;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import org.cyclonedx.contrib.com.lmco.efoss.unix.sbom.exceptions.SBomException;
 import org.cyclonedx.contrib.com.lmco.efoss.unix.sbom.generator.SBomGenerator;
 import org.cyclonedx.contrib.com.lmco.efoss.unix.sbom.utils.DateUtils;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * (U) This Spring Boot application is used to build a Software Build Of Materials (SBOM) for a Unix
@@ -28,10 +34,11 @@ import org.cyclonedx.contrib.com.lmco.efoss.unix.sbom.utils.DateUtils;
  * @since 22 April 2020
  */
 @SpringBootApplication
-public class UnixSbomGeneratorApplication
+public class UnixSbomGeneratorApplication implements ApplicationRunner
 {
 	private static final Logger logger = Logger
 			.getLogger(UnixSbomGeneratorApplication.class.getName());
+
 	
 	/**
 	 * (U) Main method used to start the building of the linux operating system building of the
@@ -41,18 +48,38 @@ public class UnixSbomGeneratorApplication
 	 */
 	public static void main(String[] args)
 	{
-		Date startDate = DateUtils.rightNowDate();
+		SpringApplication.run(UnixSbomGeneratorApplication.class, args);
+	}
+
+	/**
+	 * (U) This method runs the actual Non Package Manager SBom Generator.
+	 * 
+	 * @param args ApplicationArguments.
+	 */
+	@Override
+	public void run(ApplicationArguments args) throws Exception
+	{
 		int softwareProcessed = 0;
+
+		Date startDate = DateUtils.rightNowDate();
 		boolean failed = false;
+
+		CommandLineParser cliParser = new DefaultParser();
+		Options cliOptions = createCliOptions();
+		boolean runningHelp = false;
 		try
 		{
-			logger.debug("Starting Unix SBOM Generator.");
-			if (!SystemUtils.IS_OS_LINUX || !SystemUtils.IS_OS_UNIX) {
-				logger.info("Unable to execute. Target system is not supported.");
-				System.exit(1);
+			CommandLine cli = cliParser.parse(cliOptions, args.getSourceArgs());
+			if (cli.hasOption("help"))
+			{
+				runningHelp = true;
+				HelpFormatter formatter = new HelpFormatter();
+				formatter.printHelp("help", cliOptions);
 			}
- 			softwareProcessed = SBomGenerator.generateSBom();
-			SpringApplication.run(UnixSbomGeneratorApplication.class, args);
+			else
+			{
+				softwareProcessed = SBomGenerator.generateSBom(cli);
+			}
 		}
 		catch (SBomException sbe)
 		{
@@ -76,14 +103,42 @@ public class UnixSbomGeneratorApplication
 					msg.append(" to fail to ");
 				else
 					msg.append(" to successfully ");
-					
-				msg.append("build the Software Bill Of Materials (SBOM)!");
-					
-				if (!failed)
-					msg.append("  With " + softwareProcessed + " components!");
-				
+
+				if (runningHelp)
+					msg.append("show the usage.");
+				else
+				{
+					msg.append("build the Software Bill Of Materials (SBOM)!");
+					if (!failed)
+						msg.append("  With " + softwareProcessed + " components!");
+				}
 				logger.info(msg.toString());
 			}
 		}
 	}
+
+	/**
+	 * (U) This method is used to create the valid options for command line usage.
+	 * 
+	 * @return Options for use when running via command line.
+	 */
+	private static Options createCliOptions()
+	{
+		Options cliOptions = new Options();
+		cliOptions.addOption(new Option("h", "help", false, "will print out the command line " +
+						"options."));
+		cliOptions.addOption(new Option("i", "image", true,
+						"Docker Image file to use as top level component."));
+		cliOptions.addOption(new Option("g", "group", true,
+						"Group value to assign to top level component."));
+		cliOptions.addOption(new Option("n", "name", true,
+						"Name value to assign to top level component."));
+		cliOptions.addOption(new Option("v", "version", true,
+						"Version value to assign to top level component."));
+		cliOptions.addOption(new Option("nc", "no-components", false, "Will only campture master " +
+						"component.  Will not include any components in the list of Components."));
+
+		return cliOptions;
+	}
+
 }
