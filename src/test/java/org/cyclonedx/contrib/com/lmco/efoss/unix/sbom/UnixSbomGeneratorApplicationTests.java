@@ -21,12 +21,7 @@ import org.cyclonedx.contrib.com.lmco.efoss.sbom.commons.utils.DateUtils;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@ActiveProfiles("sandbox")
 class UnixSbomGeneratorApplicationTests {
 
 	private static final String LOG4J_FILE = "UnixSbomGeneratorApplicationAppender.xml";
@@ -35,7 +30,6 @@ class UnixSbomGeneratorApplicationTests {
 	public static Log4JTestWatcher watcher = new Log4JTestWatcher(LOG4J_FILE,
 					"UnixSbomGeneratorApplicationTests");
 
-	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
 	/**
@@ -47,14 +41,6 @@ class UnixSbomGeneratorApplicationTests {
 	}
 
 	/**
-	 * Turns on stdErr output capture
-	 */
-	private void captureErr()
-	{
-		System.setErr(new PrintStream(errContent));
-	}
-
-	/**
 	 * Turns off stdOut capture and returns the contents that have been captured
 	 *
 	 * @return String the contents of our stdOut.
@@ -63,17 +49,6 @@ class UnixSbomGeneratorApplicationTests {
 	{
 		System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
 		return outContent.toString().replaceAll("\r", "");
-	}
-
-	/**
-	 * Turns off stdErr capture and returns the contents that have been captured
-	 *
-	 * @return
-	 */
-	private String getErr()
-	{
-		System.setErr(new PrintStream(new FileOutputStream(FileDescriptor.out)));
-		return errContent.toString().replaceAll("\r", "");
 	}
 
 	/**

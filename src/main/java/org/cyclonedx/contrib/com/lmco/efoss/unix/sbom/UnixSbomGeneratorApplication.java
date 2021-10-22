@@ -21,10 +21,6 @@ import org.apache.log4j.Logger;
 import org.cyclonedx.contrib.com.lmco.efoss.unix.sbom.exceptions.SBomException;
 import org.cyclonedx.contrib.com.lmco.efoss.unix.sbom.generator.SBomGenerator;
 import org.cyclonedx.contrib.com.lmco.efoss.unix.sbom.utils.DateUtils;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * (U) This Spring Boot application is used to build a Software Build Of Materials (SBOM) for a Unix
@@ -33,8 +29,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author wrgoff
  * @since 22 April 2020
  */
-@SpringBootApplication
-public class UnixSbomGeneratorApplication implements ApplicationRunner
+public class UnixSbomGeneratorApplication
 {
 	private static final Logger logger = Logger
 			.getLogger(UnixSbomGeneratorApplication.class.getName());
@@ -48,17 +43,6 @@ public class UnixSbomGeneratorApplication implements ApplicationRunner
 	 */
 	public static void main(String[] args)
 	{
-		SpringApplication.run(UnixSbomGeneratorApplication.class, args);
-	}
-
-	/**
-	 * (U) This method runs the actual Non Package Manager SBom Generator.
-	 * 
-	 * @param args ApplicationArguments.
-	 */
-	@Override
-	public void run(ApplicationArguments args) throws Exception
-	{
 		int softwareProcessed = 0;
 
 		Date startDate = DateUtils.rightNowDate();
@@ -69,7 +53,7 @@ public class UnixSbomGeneratorApplication implements ApplicationRunner
 		boolean runningHelp = false;
 		try
 		{
-			CommandLine cli = cliParser.parse(cliOptions, args.getSourceArgs());
+			CommandLine cli = cliParser.parse(cliOptions, args);
 			if (cli.hasOption("help"))
 			{
 				runningHelp = true;
