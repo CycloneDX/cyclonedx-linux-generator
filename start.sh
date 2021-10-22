@@ -12,10 +12,10 @@ fi
 
 echo $JAVA_HOME
 
-JAR=$(ls ./target/linux-sbom-generator-[0-9].[0-9].[0-9].jar 2> /dev/null)
+JAR=$(ls ./target/linux-sbom-generator-[0-9].[0-9].[0-9]-jar-with-dependencies.jar 2> /dev/null)
 if [ "$JAR" == "" ]
 then
-	JAR=$(ls ./target/linux-sbom-generator-[0-9].[0-9].[0-9]-SNAPSHOT.jar 2> /dev/null)
+	JAR=$(ls ./target/linux-sbom-generator-[0-9].[0-9].[0-9]-SNAPSHOT-jar-with-dependencies.jar 2> /dev/null)
 
 	if [ "$JAR" == "" ]
 	then
