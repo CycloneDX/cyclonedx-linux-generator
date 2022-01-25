@@ -210,6 +210,9 @@ public class UbuntuSBomGenerator extends UnixSBomGenerator
 		{
 			version = parseVersion(reader);
 			
+			// Read the remainder of the standard output, so that the process can finish
+			while (reader.read() != -1) {}
+			
 			int exitVal = process.waitFor();
 			if (exitVal != 0)
 			{
