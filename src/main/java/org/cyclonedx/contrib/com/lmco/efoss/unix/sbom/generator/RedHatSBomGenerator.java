@@ -95,7 +95,7 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
             } catch (MalformedPackageURLException e) {
                 logger.debug("Can't get purl", e);
             }
-			cpe = getCpe(software, version);
+			cpe = getCpe(detailMap.get("Name"), version);
 
 			try {
 				String downloadUrl = getPackageDownloadUrl(software);
@@ -112,9 +112,8 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
         return bom;
     }
 
-	private String getCpe(String software, String version) {
-		// TODO
-		return null;
+	private String getCpe(String pack, String version) {
+		return String.format("cpe:2.3:a:%s:%s:%s:*:*:*:*:*:*:*", pack, pack, version);
 	}
 
 	/**
