@@ -79,6 +79,7 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
         LicenseChoice license = null;
         PackageURL purl = null;
         Component component = null;
+		String cpe = null;
         for (String software : softwareList) {
             if (logger.isDebugEnabled())
                 logger.debug("Generating Component (" + software + ")");
@@ -94,6 +95,7 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
             } catch (MalformedPackageURLException e) {
                 logger.debug("Can't get purl", e);
             }
+			cpe = getCpe(software, version);
 
 			try {
 				String downloadUrl = getPackageDownloadUrl(software);
@@ -104,11 +106,16 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 				logger.debug("Error getting Download-Url", e);
 			}
             component = createComponents(software, detailMap, license, group,
-                    version, purl, detailMap.get("Priority"));
+                    version, purl, detailMap.get("Priority"), cpe);
             bom.addComponent(addPackageManager(component, PACKAGE_MANAGER));
         }
         return bom;
     }
+
+	private String getCpe(String software, String version) {
+		// TODO
+		return null;
+	}
 
 	/**
 	 * (U) This method is used to attempt to figure out which file is the license file. If any.

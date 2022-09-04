@@ -66,7 +66,7 @@ public class AlpineSBomGenerator extends UnixSBomGenerator
 			detailMap = produceDetailMap(software);
 			version = getVersion(software);
 			component = createComponents(software, detailMap, null, null,
-					version, null, null);
+					version, null, null, null);
 			bom.addComponent(addPackageManager(component, PACKAGE_MANAGER));
 		}
 		return bom;

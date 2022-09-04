@@ -129,10 +129,11 @@ public class UnixSBomGenerator
 	 * @param version   String value to set the version to.
 	 * @param purl      String to set the URL used to pull the software from.
 	 * @param scope     String value to help us set the scope of the software.
+	 * @param cpe	    String value for cpe, if relevant
 	 * @return Component Sbom Component created from the supplied inputs.
 	 */
 	public Component createComponents(String software, Map<String, String> detailMap,
-									  LicenseChoice license, String group, String version, PackageURL purl, String scope)
+									  LicenseChoice license, String group, String version, PackageURL purl, String scope, String cpe)
 	{
 		Component component = new Component();
 		component.setType(Type.OPERATING_SYSTEM);
@@ -145,6 +146,9 @@ public class UnixSBomGenerator
 		component.setPublisher(detailMap.get("From repo"));
 		if(purl!=null) {
 			component.setPurl(purl);
+		}
+		if(cpe!=null){
+			component.setCpe(cpe);
 		}
 		component.setScope(buildScope(scope));
 		component.setVersion(version);

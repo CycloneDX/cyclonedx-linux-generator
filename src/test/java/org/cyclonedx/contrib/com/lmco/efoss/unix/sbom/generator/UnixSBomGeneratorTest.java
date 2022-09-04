@@ -137,7 +137,7 @@ class UnixSBomGeneratorTest extends BaseSBomGeneratorTest
 			String version = detailMap.get("Version");
 			String group = detailMap.get("Release");
 			Component component = generator.createComponents("zip",
-					detailMap, null, group, version, null, detailMap.get("Priority"));
+					detailMap, null, group, version, null, detailMap.get("Priority"), null);
 			
 			String actualComponentName = component.getName();
 			String actualComponentVerison = component.getVersion();
