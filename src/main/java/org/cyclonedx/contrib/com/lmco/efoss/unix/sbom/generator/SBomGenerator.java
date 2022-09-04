@@ -173,6 +173,10 @@ public class SBomGenerator
 					logger.error(error, e);
 					throw new SBomException(error);
 				}
+			}else{
+				master.setType(Component.Type.OPERATING_SYSTEM);
+				// TODO: should we set the CPE reported by hostnamectl here?
+				//master.setCpe();
 			}
 			if (StringUtils.isValid(name))
 				master.setName(name.toLowerCase());

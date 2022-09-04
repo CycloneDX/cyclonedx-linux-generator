@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.github.packageurl.PackageURL;
 import org.cyclonedx.model.ExternalReference;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -132,12 +133,12 @@ class RedHatSBomGeneratorTest extends BaseSBomGeneratorTest
 			
 			Mockito.when(pbMock.start()).thenReturn(process);
 			
-			String purl = generator.getPurl("zip", "3.0-11.el7");
+			PackageURL purl = generator.getPurl("zip", "3.0-11.el7");
 			
-			if (expected.equalsIgnoreCase(purl))
+			if (expected.equalsIgnoreCase(purl.toString()))
 				watcher.getLogger().debug("Got expected version (" + purl + ")");
 			else
-				Assert.assertEquals(expected, purl);
+				Assert.assertEquals(expected, purl.toString());
 		}
 		catch (Exception e)
 		{

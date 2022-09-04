@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.packageurl.PackageURL;
 import org.apache.log4j.Logger;
 import org.cyclonedx.model.AttachmentText;
 import org.cyclonedx.model.Component;
@@ -125,7 +126,7 @@ public class UnixSBomGenerator
 	 * @return Component Sbom Component created from the supplied inputs.
 	 */
 	public Component createComponents(String software, Map<String, String> detailMap,
-			LicenseChoice license, String group, String version, String purl, String scope)
+									  LicenseChoice license, String group, String version, PackageURL purl, String scope)
 	{
 		Component component = new Component();
 		component.setType(Type.OPERATING_SYSTEM);
