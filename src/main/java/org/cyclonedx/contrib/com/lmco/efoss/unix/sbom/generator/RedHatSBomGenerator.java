@@ -144,7 +144,7 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 
 
 	public PackageURL getPurl(String software, String version) throws MalformedPackageURLException {
-		String[] parts = software.split("\\.");
+List<String> parts = Splitter.on('.').splitToList(software);
 
 		if (parts.length == 0) {
 			return this.getPurl(software, version, null, null);
