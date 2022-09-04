@@ -137,7 +137,9 @@ public class UnixSBomGenerator
 		component.setGroup(group);
 		component.setLicenseChoice(license);
 		component.setPublisher(detailMap.get("From repo"));
-		component.setPurl(purl);
+		if(purl!=null) {
+			component.setPurl(purl);
+		}
 		component.setScope(buildScope(scope));
 		component.setVersion(version);
 		
