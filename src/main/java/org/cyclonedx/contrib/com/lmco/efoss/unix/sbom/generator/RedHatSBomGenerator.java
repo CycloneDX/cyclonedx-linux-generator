@@ -144,10 +144,20 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 
 
 	public PackageURL getPurl(String software, String version) throws MalformedPackageURLException {
-		return this.getPurl(software, version, null, null);
+		String[] parts = software.split("\\.");
+
+		if (parts.length == 0) {
+			return this.getPurl(software, version, null, null);
+		}
+		if (parts.length == 1) {
+			return this.getPurl(parts[0], version, null, null);
+		} else {
+			return this.getPurl(parts[0], version, parts[1], null);
+		}
 	}
 
 	public PackageURL getPurl(String software, String version, String arch, String distro) throws MalformedPackageURLException {
+
 		TreeMap<String, String> qualifiers = new TreeMap<>();
 		if (arch != null) {
 			qualifiers.put("arch", arch);

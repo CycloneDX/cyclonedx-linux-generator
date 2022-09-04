@@ -5,7 +5,7 @@
 
 	<groupId>org.cyclonedx.contrib.com.lmco.efoss.unix.sbom</groupId>
 	<artifactId>linux-sbom-generator</artifactId>
-	<version>3.1.0-SNAPSHOT</version>
+	<version>3.2.0-SNAPSHOT</version>
 	<name>linux-sbom-generator</name>
 	<description>Unix SBOM Generator</description>
 	<url>https://github.com/CycloneDX/cyclonedx-linux-generator</url>
