@@ -93,6 +93,15 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
             } catch (MalformedPackageURLException e) {
                 logger.debug("Can't get purl", e);
             }
+
+			try {
+				String downloadUrl = getPackageDownloadUrl(software);
+				if (downloadUrl != null) {
+					detailMap.put("download_url", downloadUrl);
+				}
+			} catch(SBomException e){
+				logger.debug("Error getting download_url", e);
+			}
             component = createComponents(software, detailMap, license, group,
                     version, purl, detailMap.get("Priority"));
             bom.addComponent(addPackageManager(component, PACKAGE_MANAGER));
@@ -139,7 +148,6 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 	}
 
 	public PackageURL getPurl(String software, String version, String arch, String distro) throws MalformedPackageURLException {
-		String purl_format = null;
 		TreeMap<String, String> qualifiers = new TreeMap<>();
 		if (arch != null) {
 			qualifiers.put("arch", arch);
