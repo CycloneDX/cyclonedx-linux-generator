@@ -296,6 +296,7 @@ public class SBomGenerator
 		String name = cli.getOptionValue("name");
 		String group = cli.getOptionValue("group");
 		String version = cli.getOptionValue("version");
+		String cpe = cli.getOptionValue("cpe");
 
 		if ((!StringUtils.isValid(name)) || (!StringUtils.isValid(version)))
 		{
@@ -305,6 +306,8 @@ public class SBomGenerator
 				name = osUtils.getOsVendor();
 			if (!StringUtils.isValid(version))
 				version = osUtils.getOsVersion();
+			if (!StringUtils.isValid(cpe))
+				cpe = osUtils.getOsCpe();
 		}
 
 		master = createMasterComponent(imageUrl, name, group, version);

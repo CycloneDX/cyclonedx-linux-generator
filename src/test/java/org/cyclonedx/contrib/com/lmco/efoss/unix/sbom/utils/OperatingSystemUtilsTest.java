@@ -571,6 +571,49 @@ class OperatingSystemUtilsTest
 	}
 
 	/**
+	 * (U) Convenience method used to test the reading of the CPE from the
+	 * "/etc/os-release" file.
+	 *
+	 * @param file              String value of the contents of the
+	 *                          "/etc/os-release" file.
+	 * @param expectedCpe	 	String value of the expected CPE.
+	 */
+	void testCpe(String file, String expectedCpe)
+	{
+		try (InputStream inputStream = OperatingSystemUtilsTest.class.getResourceAsStream(file))
+		{
+			String osReleaseFileContents = IOUtils.toString(inputStream);
+
+			OperatingSystemUtils osUtils = new OperatingSystemUtils(osReleaseFileContents);
+
+			String actualCpe = osUtils.getOsCpe();
+
+			if (expectedCpe.equalsIgnoreCase(actualCpe))
+				watcher.getLogger().debug("Got expected CPE (" +
+						expectedCpe + ").");
+			else
+				watcher.getLogger().debug("Did NOT get expected CPE!\n" +
+						"	Expected: " + expectedCpe + "\n" +
+						"	Acutal: " + actualCpe);
+
+			Assert.assertEquals(expectedCpe, actualCpe);
+		}
+		catch (IOException ioe)
+		{
+			String error = "Our test case failed to read the operating system " +
+					"etc/os-release file(" + file + ").";
+			watcher.getLogger().error(error, ioe);
+			Assert.fail("Unable to read /etc/os-release File (" + file + "). ");
+		}
+		catch (Exception e)
+		{
+			String error = "Our test case failed unexpectedly.";
+			watcher.getLogger().error(error, e);
+			Assert.fail(error);
+		}
+	}
+
+	/**
 	 * (U) This method is used to test the parsing of the Ubuntu Os File.
 	 */
 	@Test
@@ -618,6 +661,33 @@ class OperatingSystemUtilsTest
 			String error = "Our Test case " + methodName + " failed unexpectedly.";
 			watcher.getLogger().error(error, e);
 			Assert.fail(error);
+		}
+		finally
+		{
+			TestUtils.logTestFinish(methodName, startDate, watcher.getLogger());
+		}
+	}
+
+	/**
+	 * (U) This method is used to test the getting of the OS name from the
+	 * os-release file. For Redhat.
+	 */
+	@Test
+	void getOsCpeRedhat()
+	{
+		// @formatter:off
+		String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+		// @formatter:on
+
+		Date startDate = DateUtils.rightNowDate();
+
+		TestUtils.logTestStart(methodName, watcher.getLogger());
+
+		String file = "/osReleaseFiles/redhat-os-release.txt";
+		String expectedCpe = "cpe:/o:redhat:enterprise_linux:8.1:GA";
+		try
+		{
+			testCpe(file, expectedCpe);
 		}
 		finally
 		{
