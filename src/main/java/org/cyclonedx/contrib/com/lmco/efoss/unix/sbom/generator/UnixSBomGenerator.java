@@ -91,6 +91,12 @@ public class UnixSBomGenerator
 			bugs.setType(ExternalReference.Type.ISSUE_TRACKER);
 			refs.add(bugs);
 		}
+		if (detailMap.containsKey("Download-Url")){
+			ExternalReference docs = new ExternalReference();
+			docs.setUrl(detailMap.get("Download-Url"));
+			docs.setType(ExternalReference.Type.DISTRIBUTION);
+			refs.add(docs);
+		}
 		
 		return refs;
 	}

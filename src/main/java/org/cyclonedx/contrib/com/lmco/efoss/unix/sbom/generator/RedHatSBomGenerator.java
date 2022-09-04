@@ -22,6 +22,7 @@ import java.util.TreeMap;
 
 import com.github.packageurl.MalformedPackageURLException;
 import com.github.packageurl.PackageURL;
+import com.google.common.base.Splitter;
 import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.Component;
 import org.cyclonedx.model.LicenseChoice;
@@ -48,7 +49,7 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 	private static final String SOFTWARE_DETAIL_CMD = "yum info";
 	private static final String SOFTWARE_LIST_CMD = "yum list installed";
 
-	private String purlNamespace = "rhel";
+	private String purlNamespace = null;
 
 	private ProcessBuilder processBuilder = new ProcessBuilder();
 
@@ -97,10 +98,10 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 			try {
 				String downloadUrl = getPackageDownloadUrl(software);
 				if (downloadUrl != null) {
-					detailMap.put("download_url", downloadUrl);
+					detailMap.put("Download-Url", downloadUrl);
 				}
 			} catch(SBomException e){
-				logger.debug("Error getting download_url", e);
+				logger.debug("Error getting Download-Url", e);
 			}
             component = createComponents(software, detailMap, license, group,
                     version, purl, detailMap.get("Priority"));
@@ -144,15 +145,15 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 
 
 	public PackageURL getPurl(String software, String version) throws MalformedPackageURLException {
-List<String> parts = Splitter.on('.').splitToList(software);
+		List<String> parts = Splitter.on('.').splitToList(software);
 
-		if (parts.length == 0) {
+		if (parts.size() == 0) {
 			return this.getPurl(software, version, null, null);
 		}
-		if (parts.length == 1) {
-			return this.getPurl(parts[0], version, null, null);
+		if (parts.size() == 1) {
+			return this.getPurl(parts.get(0), version, null, null);
 		} else {
-			return this.getPurl(parts[0], version, parts[1], null);
+			return this.getPurl(parts.get(0), version, parts.get(1), null);
 		}
 	}
 
@@ -166,7 +167,7 @@ List<String> parts = Splitter.on('.').splitToList(software);
 			qualifiers.put("distro", distro);
 		}
 		return new PackageURL(
-				PackageURL.StandardTypes.RPM, purlNamespace.toLowerCase(), software, version, qualifiers, null);
+				PackageURL.StandardTypes.RPM, purlNamespace, software, version, qualifiers, null);
 	}
 
 
