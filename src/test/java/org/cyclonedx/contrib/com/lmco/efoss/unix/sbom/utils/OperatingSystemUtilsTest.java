@@ -12,6 +12,7 @@ package org.cyclonedx.contrib.com.lmco.efoss.unix.sbom.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -589,12 +590,12 @@ class OperatingSystemUtilsTest
 		{
 			try (InputStream inputStream = OperatingSystemUtilsTest.class.getResourceAsStream(file))
 			{
-				String theString = IOUtils.toString(inputStream); 
+				String theString = IOUtils.toString(inputStream);
+
+				var opts = readOs(theString);
+				var osUtils = new TestOperatingSystemUtil("Ubuntu", opts);
 				
-				OperatingSystemUtils osUtils = new OperatingSystemUtils();
-				Map<String, String> osMap = osUtils.readOs(theString);
-				
-				String osVendor = osMap.get("NAME");
+				String osVendor = opts.get("NAME");
 				osVendor = CharMatcher.is('\"').trimFrom(osVendor);
 				
 				if (expected.equalsIgnoreCase(osVendor))
@@ -622,5 +623,40 @@ class OperatingSystemUtilsTest
 		{
 			TestUtils.logTestFinish(methodName, startDate, watcher.getLogger());
 		}
+	}
+
+	private Map<String, String> readOs(String content)
+	{
+		Map<String, String> detailMap = new HashMap<>();
+
+		String[] contents = content.split("\n");
+		String componentDetailName = null;
+		StringBuilder componentDetailValue = new StringBuilder();
+		int index = 0;
+
+		for (String line : contents)
+		{
+			if (line.startsWith(" "))
+			{
+				componentDetailValue.append(line);
+			}
+			else
+			{
+				if (componentDetailName != null)
+				{
+					detailMap.put(componentDetailName, componentDetailValue.toString());
+					componentDetailName = null;
+					componentDetailValue = new StringBuilder();
+				}
+
+				if (line.contains("="))
+				{
+					index = line.indexOf('=');
+					componentDetailName = line.substring(0, index);
+					componentDetailValue.append(line.substring(index + 1).trim());
+				}
+			}
+		}
+		return detailMap;
 	}
 }

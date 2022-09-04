@@ -116,9 +116,10 @@ class RedHatSBomGeneratorTest extends BaseSBomGeneratorTest
 		Date startDate = DateUtils.rightNowDate();
 		
 		TestUtils.logTestStart(methodName, watcher.getLogger());
-		
-		String expected = "https://rhui3.us-west-2.aws.ce.redhat.com/pulp/repos/content/dist/rhel/rhui/server/7/7Server/x86_64/os/Packages/z/zip-3.0-11.el7.x86_64.rpm";
-		
+
+		String expectedUrl = "https://rhui3.us-west-2.aws.ce.redhat.com/pulp/repos/content/dist/rhel/rhui/server/7/7Server/x86_64/os/Packages/z/zip-3.0-11.el7.x86_64.rpm";
+		String expected = "pkg:rpm/rhel/zip@3.0-11.el7";
+
 		AutoCloseable openMocks = null;
 		
 		String fileName = "/purl/redhatPurl.txt";
@@ -131,12 +132,12 @@ class RedHatSBomGeneratorTest extends BaseSBomGeneratorTest
 			
 			Mockito.when(pbMock.start()).thenReturn(process);
 			
-			String version = generator.getPurl("zip");
+			String purl = generator.getPurl("zip", "3.0-11.el7");
 			
-			if (expected.equalsIgnoreCase(version))
-				watcher.getLogger().debug("Got expected version (" + version + ")");
+			if (expected.equalsIgnoreCase(purl))
+				watcher.getLogger().debug("Got expected version (" + purl + ")");
 			else
-				Assert.assertEquals(expected, version);
+				Assert.assertEquals(expected, purl);
 		}
 		catch (Exception e)
 		{

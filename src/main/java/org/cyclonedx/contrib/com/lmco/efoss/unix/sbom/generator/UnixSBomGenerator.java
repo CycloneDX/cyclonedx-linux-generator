@@ -41,7 +41,7 @@ public class UnixSBomGenerator
 {
 	protected enum AVAILABLE_LINUX_FLAVORS
 	{
-		ALPINE, REDHAT, UBUNTU
+		ALPINE, REDHAT, UBUNTU, AL2
 	}
 	
 	protected static final Logger logger = Logger.getLogger(UnixSBomGenerator.class.getName());

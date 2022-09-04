@@ -44,9 +44,15 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 	private static final String PURL_CMD = "yumdownloader --urls";
 	private static final String SOFTWARE_DETAIL_CMD = "yum info";
 	private static final String SOFTWARE_LIST_CMD = "yum list installed";
+
+	private String purlNamespace = "rhel";
 	
 	private ProcessBuilder processBuilder = new ProcessBuilder();
-	
+
+	public void setPurlNamespace(String ns){
+		this.purlNamespace = ns;
+	}
+
 	/**
 	 * (U) This method is used to generate the Software Bill Of Materials (SBOM) for all RedHat
 	 * Linux Operating systems.
@@ -78,7 +84,9 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 			version = detailMap.get("Version");
 			group = detailMap.get("Release");
 			license = processLicense(software, version);
-			purl = getPurl(software);
+			purl = getPurl(software,version);
+			// TODO: get arch and distro
+			//purl = getPurl(software,version, arch, distro);
 			component = createComponents(software, detailMap, license, group,
 					version, purl, detailMap.get("Priority"));
 			bom.addComponent(addPackageManager(component, PACKAGE_MANAGER));
@@ -118,19 +126,33 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 		}
 		return null;
 	}
-	
+
+
+	public String getPurl(String software, String version) {
+		return this.getPurl(software, version, null, null);
+	}
+
+	public String getPurl(String software, String version, String arch, String distro) {
+		String purl_format = null;
+		if(arch == null){
+			return String.format("pkg:rpm/%s/%s@%s", purlNamespace, software, version);
+		}
+		else{
+			return String.format("pkg:rpm/%s/%s@%s?arch=%s&distro=%s", purlNamespace, software, version, arch, distro);
+		}
+	}
+
+
 	/**
 	 * (U) This method is used to get the Product Uniform Resource Locator (PURL) or as we know it
 	 * the download Uniform Resource Locator (URL).
-	 * 
+	 *
 	 * @param software String value of the software to get the PURL for.
 	 * @return String the URL that will be used to download this software product.
 	 * @throws SBomException in the event we are unable to get the PURL from the server.
 	 */
-	public String getPurl(String software)
-	{
+	public String getPackageDownloadUrl(String software){
 		String purl = null;
-		
 		String cmd = PURL_CMD + " " + software;
 		
 		processBuilder.command("bash", "-c", cmd);

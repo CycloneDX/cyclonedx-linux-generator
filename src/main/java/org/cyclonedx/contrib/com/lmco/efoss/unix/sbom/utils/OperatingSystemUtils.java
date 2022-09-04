@@ -146,7 +146,7 @@ public class OperatingSystemUtils
 	 * @param content String value read from the file.
 	 * @return Map containing the information about the Operating system.
 	 */
-	public Map<String, String> readOs(String content)
+	public static Map<String, String> readOs(String content)
 	{
 		Map<String, String> detailMap = new HashMap<>();
 		
