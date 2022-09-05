@@ -113,7 +113,7 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
     }
 
 	private String getCpe(String pack, String version) {
-		return String.format("cpe:2.3:a:*:%s:%s:*:*:*:*:*:*:*", pack, version);
+		return String.format("cpe:2.3:a:%s:%s:%s:*:*:*:*:*:*:*", pack, pack, version);
 	}
 
 	/**
