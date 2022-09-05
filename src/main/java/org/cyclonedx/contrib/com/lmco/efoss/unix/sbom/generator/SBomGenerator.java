@@ -145,13 +145,13 @@ public class SBomGenerator
 	 *                       imageUrl provided.
 	 */
 	public static Component createMasterComponent(String imageUrl, String name,
-					String group, String version) throws SBomException
+					String group, String version, String cpe) throws SBomException
 	{
 		Component master = null;
 		if ((StringUtils.isValid(imageUrl)) || 
 						(StringUtils.isValid(name) && ((StringUtils.isValid(version)))))
 		{
-			master = createMasterComponent(imageUrl);
+			master = createMasterComponent(imageUrl,name,group,version, imageUrl ,cpe);
 			
 			if (StringUtils.isValid(imageUrl))
 			{
@@ -172,6 +172,11 @@ public class SBomGenerator
 					String error = "Failed to build the Package URL!";
 					logger.error(error, e);
 					throw new SBomException(error);
+				}
+			}else{
+				master.setType(Component.Type.OPERATING_SYSTEM);
+				if(StringUtils.isValid(cpe)){
+					master.setCpe(cpe);
 				}
 			}
 			if (StringUtils.isValid(name))
@@ -292,6 +297,7 @@ public class SBomGenerator
 		String name = cli.getOptionValue("name");
 		String group = cli.getOptionValue("group");
 		String version = cli.getOptionValue("version");
+		String cpe = cli.getOptionValue("cpe");
 
 		if ((!StringUtils.isValid(name)) || (!StringUtils.isValid(version)))
 		{
@@ -301,9 +307,11 @@ public class SBomGenerator
 				name = osUtils.getOsVendor();
 			if (!StringUtils.isValid(version))
 				version = osUtils.getOsVersion();
+			if (!StringUtils.isValid(cpe))
+				cpe = osUtils.getOsCpe();
 		}
 
-		master = createMasterComponent(imageUrl, name, group, version);
+		master = createMasterComponent(imageUrl, name, group, version, cpe);
 
 		return master;
 	}
@@ -312,12 +320,17 @@ public class SBomGenerator
 	 * (U) This method is used to create the master component. It will then fill in
 	 * the image information (if provided).
 	 * 
+	 *
+	 * @param url
+	 * @param name
+	 * @param group
+	 * @param version
 	 * @param imageUrl String value of where to get the docker image from.
 	 * @return Component created, and filled in if the imageUrl is provided.
 	 * @throws SBomException in the event we are unable to pull the image via the
 	 *                       image URL provided.
 	 */
-	private static Component createMasterComponent(String imageUrl) throws SBomException
+	private static Component createMasterComponent(String url, String name, String group, String version, String imageUrl, String cpe) throws SBomException
 	{
 		Component master = new Component();
 		master.setType(org.cyclonedx.model.Component.Type.CONTAINER);

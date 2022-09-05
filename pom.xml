@@ -5,13 +5,13 @@
 
 	<groupId>org.cyclonedx.contrib.com.lmco.efoss.unix.sbom</groupId>
 	<artifactId>linux-sbom-generator</artifactId>
-	<version>3.1.0-SNAPSHOT</version>
+	<version>3.2.0-SNAPSHOT</version>
 	<name>linux-sbom-generator</name>
 	<description>Unix SBOM Generator</description>
 	<url>https://github.com/CycloneDX/cyclonedx-linux-generator</url>
 
 	<properties>
-		<cyclonedx.core.java.version>5.0.4</cyclonedx.core.java.version>
+		<cyclonedx.core.java.version>7.2.0</cyclonedx.core.java.version>
 		<cyclonedx.maven.plugin.version>2.5.3</cyclonedx.maven.plugin.version>
 		<cyclonedx.schema.version>1.3</cyclonedx.schema.version>
 

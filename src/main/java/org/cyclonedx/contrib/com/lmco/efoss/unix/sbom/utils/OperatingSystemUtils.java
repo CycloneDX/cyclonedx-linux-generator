@@ -30,9 +30,9 @@ import com.google.common.base.CharMatcher;
 public class OperatingSystemUtils
 {
 	private static final Logger logger = Logger.getLogger(OperatingSystemUtils.class.getName());
-	
+
 	private static final String OS_RELEASE_FILE = "/etc/os-release";
-	
+
 	private Map<String, String> osMap = null;
 
 	/**
@@ -114,6 +114,25 @@ public class OperatingSystemUtils
 	}
 
 	/**
+	 * (U) This method is used to get the operating system's CPE, if it has one defined.
+	 *
+	 * @return String the operating system CPE.
+	 */
+	public String getOsCpe()
+	{
+		String cpe = null;
+
+		if (osMap.containsKey("CPE_NAME"))
+			cpe = osMap.get("CPE_NAME");
+		if (StringUtils.isValid(cpe))
+			cpe = CharMatcher.is('\"').trimFrom(cpe);
+
+		return cpe;
+	}
+
+
+
+	/**
 	 * (U) This method is used to get the operating system. From the /etc/os-release
 	 * file.
 	 * 
@@ -133,12 +152,14 @@ public class OperatingSystemUtils
 		catch (IOException ioe)
 		{
 			String error = "Unable to read file(" + OS_RELEASE_FILE + ") to get the " +
-					"operating sytem!";
+					"operating system!";
 			logger.error(error, ioe);
 			throw new SBomException(error, ioe);
 		}
 		return detailMap;
 	}
+
+
 	
 	/**
 	 * (U) This method is used to read the contents of the OS file.
@@ -146,7 +167,7 @@ public class OperatingSystemUtils
 	 * @param content String value read from the file.
 	 * @return Map containing the information about the Operating system.
 	 */
-	public Map<String, String> readOs(String content)
+	public static Map<String, String> readOs(String content)
 	{
 		Map<String, String> detailMap = new HashMap<>();
 		
