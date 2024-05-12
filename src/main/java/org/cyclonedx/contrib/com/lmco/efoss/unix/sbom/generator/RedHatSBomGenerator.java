@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2018,2019 Lockheed Martin Corporation.
  *
  * This work is owned by Lockheed Martin Corporation. Lockheed Martin personnel are permitted to use and
@@ -18,7 +18,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
+import com.github.packageurl.MalformedPackageURLException;
+import com.github.packageurl.PackageURL;
+import com.google.common.base.Splitter;
 import org.cyclonedx.model.Bom;
 import org.cyclonedx.model.Component;
 import org.cyclonedx.model.LicenseChoice;
@@ -28,7 +32,7 @@ import org.cyclonedx.contrib.com.lmco.efoss.unix.sbom.exceptions.SBomException;
 /**
  * * (U) This class is responsible for generating the Software Bill Of Materials (SBOM) for all
  * Oracle Red Hat Linux Operating Systems.
- * 
+ *
  * @author wrgoff
  * @since 24 April 2020
  */
@@ -37,58 +41,84 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 	private static final List<String> POSSIBLE_LICENSE_FILES = new ArrayList<>(
 			List.of("LICENSE.txt",
 			"LICENSE", "COPYING", "COPYING.LGPL", "PORTING", "Copying"));
-	
+
 	private static final String PACKAGE_MANAGER = "yum";
-	
+
 	// Unix Commands.
 	private static final String PURL_CMD = "yumdownloader --urls";
 	private static final String SOFTWARE_DETAIL_CMD = "yum info";
 	private static final String SOFTWARE_LIST_CMD = "yum list installed";
-	
+
+	private String purlNamespace = null;
+
 	private ProcessBuilder processBuilder = new ProcessBuilder();
-	
+
+	public void setPurlNamespace(String ns){
+		this.purlNamespace = ns;
+	}
+
 	/**
 	 * (U) This method is used to generate the Software Bill Of Materials (SBOM) for all RedHat
 	 * Linux Operating systems.
-	 * 
+	 *
 	 * @return Bom The Software Bill Of Materials for this RedHat Linux Operating System.
 	 * @throws SBomException if we are unable to build the SBOM.
 	 */
-	public Bom generateSBom()
-	{
-		List<String> softwareList = generateListOfSoftware(SOFTWARE_LIST_CMD, ' ',
-				"Installed Packages");
-		
-		Bom bom = new Bom();
-		
-		if (logger.isDebugEnabled())
-			logger.debug("Processing " + softwareList.size() + " software programs.");
-		
-		Map<String, String> detailMap = null;
-		String version = null;
-		String group = null;
-		LicenseChoice license = null;
-		String purl = null;
-		Component component = null;
-		for (String software : softwareList)
-		{
-			if (logger.isDebugEnabled())
-				logger.debug("Generating Component (" + software + ")");
-			detailMap = produceDetailMap(software);
-			version = detailMap.get("Version");
-			group = detailMap.get("Release");
-			license = processLicense(software, version);
-			purl = getPurl(software);
-			component = createComponents(software, detailMap, license, group,
-					version, purl, detailMap.get("Priority"));
-			bom.addComponent(addPackageManager(component, PACKAGE_MANAGER));
-		}
-		return bom;
+    public Bom generateSBom() {
+        List<String> softwareList = generateListOfSoftware(SOFTWARE_LIST_CMD, ' ',
+                "Installed Packages");
+
+        Bom bom = new Bom();
+
+        if (logger.isDebugEnabled())
+            logger.debug("Processing " + softwareList.size() + " software programs.");
+
+        Map<String, String> detailMap = null;
+        String version = null;
+        String group = null;
+        LicenseChoice license = null;
+        PackageURL purl = null;
+        Component component = null;
+		String cpe = null;
+        for (String software : softwareList) {
+            if (logger.isDebugEnabled())
+                logger.debug("Generating Component (" + software + ")");
+            detailMap = produceDetailMap(software);
+            version = detailMap.get("Version");
+            group = detailMap.get("Release");
+            license = processLicense(software, version);
+            try {
+                purl = getPurl(software, version);
+
+                // TODO: get arch and distro
+                //purl = getPurl(software,version, arch, distro);
+            } catch (MalformedPackageURLException e) {
+                logger.debug("Can't get purl", e);
+            }
+			cpe = getCpe(detailMap.get("Name"), version);
+
+			try {
+				String downloadUrl = getPackageDownloadUrl(software);
+				if (downloadUrl != null) {
+					detailMap.put("Download-Url", downloadUrl);
+				}
+			} catch(SBomException e){
+				logger.debug("Error getting Download-Url", e);
+			}
+            component = createComponents(software, detailMap, license, group,
+                    version, purl, detailMap.get("Priority"), cpe);
+            bom.addComponent(addPackageManager(component, PACKAGE_MANAGER));
+        }
+        return bom;
+    }
+
+	private String getCpe(String pack, String version) {
+		return String.format("cpe:2.3:a:%s:%s:%s:*:*:*:*:*:*:*", pack, pack, version);
 	}
-	
+
 	/**
 	 * (U) This method is used to attempt to figure out which file is the license file. If any.
-	 * 
+	 *
 	 * @param software String value of the software we are attempting to get the license file for.
 	 * @param version  String value of the version of the software we are attempting to get the
 	 *                 license for.
@@ -97,19 +127,19 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 	public String getLicenseFileName(String software, String version)
 	{
 		File tempFile = null;
-		
+
 		software = software.trim();
-		
+
 		if (software.endsWith(".x86_64"))
 			software = software.replace(".x86_64", "");
-		
+
 		if (version != null)
 			software = software + "-" + version.trim();
-		
+
 		if (logger.isDebugEnabled())
 			logger.debug("Attempting to get license file from " + SOFTWARE_LICENSE_DIR + software +
 					".");
-		
+
 		for (String fileToTry : POSSIBLE_LICENSE_FILES)
 		{
 			tempFile = new File(SOFTWARE_LICENSE_DIR + software, fileToTry);
@@ -118,26 +148,52 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 		}
 		return null;
 	}
-	
+
+
+	public PackageURL getPurl(String software, String version) throws MalformedPackageURLException {
+		List<String> parts = Splitter.on('.').splitToList(software);
+
+		if (parts.size() == 0) {
+			return this.getPurl(software, version, null, null);
+		}
+		if (parts.size() == 1) {
+			return this.getPurl(parts.get(0), version, null, null);
+		} else {
+			return this.getPurl(parts.get(0), version, parts.get(1), null);
+		}
+	}
+
+	public PackageURL getPurl(String software, String version, String arch, String distro) throws MalformedPackageURLException {
+
+		TreeMap<String, String> qualifiers = new TreeMap<>();
+		if (arch != null) {
+			qualifiers.put("arch", arch);
+		}
+		if (distro != null) {
+			qualifiers.put("distro", distro);
+		}
+		return new PackageURL(
+				PackageURL.StandardTypes.RPM, purlNamespace, software, version, qualifiers, null);
+	}
+
+
 	/**
 	 * (U) This method is used to get the Product Uniform Resource Locator (PURL) or as we know it
 	 * the download Uniform Resource Locator (URL).
-	 * 
+	 *
 	 * @param software String value of the software to get the PURL for.
 	 * @return String the URL that will be used to download this software product.
 	 * @throws SBomException in the event we are unable to get the PURL from the server.
 	 */
-	public String getPurl(String software)
-	{
+	public String getPackageDownloadUrl(String software){
 		String purl = null;
-		
 		String cmd = PURL_CMD + " " + software;
-		
+
 		processBuilder.command("bash", "-c", cmd);
-		
+
 		if (logger.isDebugEnabled())
 			logger.debug("Attempting to get PURL for " + software + ".");
-		
+
 		try
 		{
 			Process process = processBuilder.start();
@@ -152,10 +208,10 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 		}
 		return purl;
 	}
-	
+
 	/**
 	 * (U) This method is used to parse the PURL from the output of the command process.
-	 * 
+	 *
 	 * @param process  Process that is running the YUM command.
 	 * @param software String value of the software, used for debugging purposes.
 	 * @return String the PURL if available.
@@ -164,15 +220,15 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 	public String parsePurl(Process process, String software)
 	{
 		String purl = null;
-		
+
 		try (BufferedReader reader = new BufferedReader(
 				new InputStreamReader(process.getInputStream())))
 		{
 			purl = parsePurlCmdOutput(reader);
-			
+
 			if (purl == null)
 				logger.warn("No PURL found for software package (" + software + ").");
-			
+
 			int exitVal = process.waitFor();
 			if (exitVal != 0)
 			{
@@ -194,11 +250,11 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 		}
 		return purl;
 	}
-	
+
 	/**
 	 * (U) This method is used to parse the Unix Command Output to get the download Uniform Resource
 	 * Locator (URL) also known as the Product Uniform Resource Locator (PURL)
-	 * 
+	 *
 	 * @param reader BufferedReader to parse the output form.
 	 * @return String the PURL or download URL that can be used to download the software package.
 	 * @throws SBomException in the event we are unable to parse the command's output.
@@ -232,11 +288,11 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 		}
 		return purl;
 	}
-	
+
 	/**
 	 * (U) This method is responsible for getting the license (if present) and placing it in the
 	 * LicenseChoice Object passed back.
-	 * 
+	 *
 	 * @param software String value of the software we are attempting to get the license for.
 	 * @param version  String value of the version of the software we are attempting to get the
 	 *                 license for.
@@ -246,18 +302,18 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 	{
 		if (logger.isDebugEnabled())
 			logger.debug("Attempting to get license file for " + software + ".");
-		
+
 		LicenseChoice licenseChoice = null;
-		
+
 		String licenseFile = getLicenseFileName(software, version);
-		
+
 		try
 		{
 			if (licenseFile != null)
 			{
 				if (logger.isDebugEnabled())
 					logger.debug("Attempting to process license (" + licenseFile + ")");
-				
+
 				String licenseTxt = new String(Files.readAllBytes(Paths.get(licenseFile)));
 				licenseChoice = parseLicenseText(licenseTxt, AVAILABLE_LINUX_FLAVORS.REDHAT);
 			}
@@ -270,11 +326,11 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 		}
 		return licenseChoice;
 	}
-	
+
 	/**
 	 * (U) This method is used to produce a Detail Map of the Software in question. This will be
 	 * used to create a CycloneDx Component.
-	 * 
+	 *
 	 * @param software String value of the component to build the detail map for.
 	 * @return Map containing the key value pairs about the software.
 	 * @throws SBomException in the event we can NOT produce the detail map of the software.
@@ -282,7 +338,7 @@ public class RedHatSBomGenerator extends UnixSBomGenerator
 	private Map<String, String> produceDetailMap(String software)
 	{
 		String cmd = SOFTWARE_DETAIL_CMD + " " + software;
-		
+
 		return (produceDetailMap(cmd, AVAILABLE_LINUX_FLAVORS.REDHAT));
 	}
 }

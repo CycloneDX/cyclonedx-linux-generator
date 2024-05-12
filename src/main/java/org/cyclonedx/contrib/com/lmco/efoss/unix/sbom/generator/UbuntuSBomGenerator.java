@@ -71,7 +71,7 @@ public class UbuntuSBomGenerator extends UnixSBomGenerator
 			group = detailMap.get("Release");
 			license = processLicense(software);
 			component = createComponents(software, detailMap, license, group,
-					version, null, detailMap.get("Priority"));
+					version, null, detailMap.get("Priority"), null);
 			bom.addComponent(addPackageManager(component, PACKAGE_MANAGER));
 		}
 		

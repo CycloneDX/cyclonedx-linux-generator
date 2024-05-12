@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.packageurl.PackageURL;
 import org.apache.log4j.Logger;
 import org.cyclonedx.model.AttachmentText;
 import org.cyclonedx.model.Component;
@@ -41,7 +42,7 @@ public class UnixSBomGenerator
 {
 	protected enum AVAILABLE_LINUX_FLAVORS
 	{
-		ALPINE, REDHAT, UBUNTU
+		ALPINE, REDHAT, UBUNTU, AL2
 	}
 	
 	protected static final Logger logger = Logger.getLogger(UnixSBomGenerator.class.getName());
@@ -90,6 +91,12 @@ public class UnixSBomGenerator
 			bugs.setType(ExternalReference.Type.ISSUE_TRACKER);
 			refs.add(bugs);
 		}
+		if (detailMap.containsKey("Download-Url")){
+			ExternalReference docs = new ExternalReference();
+			docs.setUrl(detailMap.get("Download-Url"));
+			docs.setType(ExternalReference.Type.DISTRIBUTION);
+			refs.add(docs);
+		}
 		
 		return refs;
 	}
@@ -122,10 +129,11 @@ public class UnixSBomGenerator
 	 * @param version   String value to set the version to.
 	 * @param purl      String to set the URL used to pull the software from.
 	 * @param scope     String value to help us set the scope of the software.
+	 * @param cpe	    String value for cpe, if relevant
 	 * @return Component Sbom Component created from the supplied inputs.
 	 */
 	public Component createComponents(String software, Map<String, String> detailMap,
-			LicenseChoice license, String group, String version, String purl, String scope)
+									  LicenseChoice license, String group, String version, PackageURL purl, String scope, String cpe)
 	{
 		Component component = new Component();
 		component.setType(Type.OPERATING_SYSTEM);
@@ -136,7 +144,12 @@ public class UnixSBomGenerator
 		component.setGroup(group);
 		component.setLicenseChoice(license);
 		component.setPublisher(detailMap.get("From repo"));
-		component.setPurl(purl);
+		if(purl!=null) {
+			component.setPurl(purl);
+		}
+		if(cpe!=null){
+			component.setCpe(cpe);
+		}
 		component.setScope(buildScope(scope));
 		component.setVersion(version);
 		
