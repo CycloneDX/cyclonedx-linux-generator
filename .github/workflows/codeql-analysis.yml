@@ -10,6 +10,11 @@ on:
   schedule:
     - cron: '0 9 * * 5'
 
+# see https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/controlling-permissions-for-github_token
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   analyze:
     name: Analyze
