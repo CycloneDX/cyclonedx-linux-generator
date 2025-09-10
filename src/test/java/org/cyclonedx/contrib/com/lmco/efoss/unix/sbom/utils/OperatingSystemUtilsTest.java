@@ -12,6 +12,7 @@ package org.cyclonedx.contrib.com.lmco.efoss.unix.sbom.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -570,6 +571,49 @@ class OperatingSystemUtilsTest
 	}
 
 	/**
+	 * (U) Convenience method used to test the reading of the CPE from the
+	 * "/etc/os-release" file.
+	 *
+	 * @param file              String value of the contents of the
+	 *                          "/etc/os-release" file.
+	 * @param expectedCpe	 	String value of the expected CPE.
+	 */
+	void testCpe(String file, String expectedCpe)
+	{
+		try (InputStream inputStream = OperatingSystemUtilsTest.class.getResourceAsStream(file))
+		{
+			String osReleaseFileContents = IOUtils.toString(inputStream);
+
+			OperatingSystemUtils osUtils = new OperatingSystemUtils(osReleaseFileContents);
+
+			String actualCpe = osUtils.getOsCpe();
+
+			if (expectedCpe.equalsIgnoreCase(actualCpe))
+				watcher.getLogger().debug("Got expected CPE (" +
+						expectedCpe + ").");
+			else
+				watcher.getLogger().debug("Did NOT get expected CPE!\n" +
+						"	Expected: " + expectedCpe + "\n" +
+						"	Acutal: " + actualCpe);
+
+			Assert.assertEquals(expectedCpe, actualCpe);
+		}
+		catch (IOException ioe)
+		{
+			String error = "Our test case failed to read the operating system " +
+					"etc/os-release file(" + file + ").";
+			watcher.getLogger().error(error, ioe);
+			Assert.fail("Unable to read /etc/os-release File (" + file + "). ");
+		}
+		catch (Exception e)
+		{
+			String error = "Our test case failed unexpectedly.";
+			watcher.getLogger().error(error, e);
+			Assert.fail(error);
+		}
+	}
+
+	/**
 	 * (U) This method is used to test the parsing of the Ubuntu Os File.
 	 */
 	@Test
@@ -589,12 +633,12 @@ class OperatingSystemUtilsTest
 		{
 			try (InputStream inputStream = OperatingSystemUtilsTest.class.getResourceAsStream(file))
 			{
-				String theString = IOUtils.toString(inputStream); 
+				String theString = IOUtils.toString(inputStream);
+
+				var opts = readOs(theString);
+				var osUtils = new TestOperatingSystemUtil("Ubuntu", opts);
 				
-				OperatingSystemUtils osUtils = new OperatingSystemUtils();
-				Map<String, String> osMap = osUtils.readOs(theString);
-				
-				String osVendor = osMap.get("NAME");
+				String osVendor = opts.get("NAME");
 				osVendor = CharMatcher.is('\"').trimFrom(osVendor);
 				
 				if (expected.equalsIgnoreCase(osVendor))
@@ -622,5 +666,67 @@ class OperatingSystemUtilsTest
 		{
 			TestUtils.logTestFinish(methodName, startDate, watcher.getLogger());
 		}
+	}
+
+	/**
+	 * (U) This method is used to test the getting of the OS name from the
+	 * os-release file. For Redhat.
+	 */
+	@Test
+	void getOsCpeRedhat()
+	{
+		// @formatter:off
+		String methodName = new Object(){}.getClass().getEnclosingMethod().getName();
+		// @formatter:on
+
+		Date startDate = DateUtils.rightNowDate();
+
+		TestUtils.logTestStart(methodName, watcher.getLogger());
+
+		String file = "/osReleaseFiles/redhat-os-release.txt";
+		String expectedCpe = "cpe:/o:redhat:enterprise_linux:8.1:GA";
+		try
+		{
+			testCpe(file, expectedCpe);
+		}
+		finally
+		{
+			TestUtils.logTestFinish(methodName, startDate, watcher.getLogger());
+		}
+	}
+
+	private Map<String, String> readOs(String content)
+	{
+		Map<String, String> detailMap = new HashMap<>();
+
+		String[] contents = content.split("\n");
+		String componentDetailName = null;
+		StringBuilder componentDetailValue = new StringBuilder();
+		int index = 0;
+
+		for (String line : contents)
+		{
+			if (line.startsWith(" "))
+			{
+				componentDetailValue.append(line);
+			}
+			else
+			{
+				if (componentDetailName != null)
+				{
+					detailMap.put(componentDetailName, componentDetailValue.toString());
+					componentDetailName = null;
+					componentDetailValue = new StringBuilder();
+				}
+
+				if (line.contains("="))
+				{
+					index = line.indexOf('=');
+					componentDetailName = line.substring(0, index);
+					componentDetailValue.append(line.substring(index + 1).trim());
+				}
+			}
+		}
+		return detailMap;
 	}
 }
